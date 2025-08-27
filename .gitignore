@@ -1,0 +1,9 @@
+.vscode
+.keys
+.pester
+.terraform
+.terraform.lock.hcl
+terraform-latest
+bin/terraform*
+credentials
+secret.tfvars

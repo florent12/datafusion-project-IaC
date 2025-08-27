@@ -6,16 +6,10 @@ variable "project_id" {
 variable "region" {
   description = "Région GCP"
   type        = string
-  default     = "europe-west9"
+  default     = "europe-west1"
 }
 
 variable "env" {
   description = "Nom de l'environnement (dev ou prod)"
   type        = string
-}
-
-variable "gcp_credentials" {
-  description = "Chemin ou contenu JSON de la clé du service account"
-  type        = string
-  sensitive   = true
 }

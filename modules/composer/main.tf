@@ -8,41 +8,46 @@ resource "google_composer_environment" "composer_env" {
   region = var.region
 
   config {
-    node_count = 1   # nombre de nœuds du cluster GKE sous-jacent
+    #node_count = 3   # nombre de nœuds du cluster GKE sous-jacent
 
     software_config {
-      image_version = "composer-2.6.4-airflow-2.6.3"  # version Composer + Airflow
-      python_version = "3"                            # Python 3
-      # tu peux installer des dépendances pip
-      # pypi_packages = {
-      #   "pandas" = "==1.5.3"
-      # }
+      image_version = "composer-3-airflow-2.10.5"  # version Composer + Airflow
+      #python_version = "3"                    
+    }
+
+    node_config {
+      service_account = "composer-sa@${var.project_id}.iam.gserviceaccount.com"
     }
 
     # config machine des workers
     workloads_config {
       scheduler {
-        cpu        = 1
-        memory_gb  = 3.75
+        cpu        = 0.5
+        memory_gb  = 2
         storage_gb = 1
+        count      = 1
       }
       web_server {
-        cpu        = 1
+        cpu        = 0.5
         memory_gb  = 2
         storage_gb = 1
       }
       worker {
-        cpu        = 2
-        memory_gb  = 7.5
-        storage_gb = 2
+        cpu = 0.5
+        memory_gb  = 2
+        storage_gb = 1
+        min_count  = 1
+        max_count  = 3
       }
+      triggerer {
+        cpu = 0.5
+        memory_gb = 1
+        count = 1
+      }
+
+
     }
 
-    # réseau (si tu en as déjà un sinon ça utilise le default VPC)
-    # node_config {
-    #   network    = var.network
-    #   subnetwork = var.subnetwork
-    #   service_account = var.service_account
-    # }
+    
   }
 }
