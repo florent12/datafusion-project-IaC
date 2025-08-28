@@ -30,7 +30,7 @@ jobs:
             echo "ENV=dev" >> $GITHUB_ENV
             echo "PROJECT_ID=projets-gcp-dev" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-dev" >> $GITHUB_ENV
-            echo "${{ secrets.GCP_SA_KEY_DEV }}" > /tmp/sa-key.json
+            echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > /tmp/sa-key.json
           elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
             echo "PROJECT_ID=projets-gcp-prod" >> $GITHUB_ENV
