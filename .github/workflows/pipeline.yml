@@ -62,10 +62,14 @@ jobs:
       # Terraform Plan
       - name: Terraform Plan-
         working-directory: envs/${{ env.ENV }}
+        env:
+          TF_VAR_gcp_credentials: $GOOGLE_APPLICATION_CREDENTIALS
         run: terraform plan -out=tfplan
 
       # Terraform Apply
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         working-directory: envs/${{ env.ENV }}
+        env:
+          TF_VAR_gcp_credentials: $GOOGLE_APPLICATION_CREDENTIALS
         run: terraform apply -auto-approve tfplan
