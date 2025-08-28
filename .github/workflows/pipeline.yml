@@ -38,6 +38,7 @@ jobs:
             echo "STATE_BUCKET=projet-tf-state-prod" >> $GITHUB_ENV
             echo "SECRET_NAME=GCP_SA_KEY_PROD" >> $GITHUB_ENV
           fi
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa-key.json" >> $GITHUB_ENV
 
       # Créer le fichier credentials depuis le secret base64
       - name: Create GCP credentials file
