@@ -57,9 +57,7 @@ jobs:
       # Initialisation Terraform
       - name: Terraform Init
         working-directory: envs/${{ env.ENV }}
-        run: terraform init \
-              -backend-config="bucket=${{ env.STATE_BUCKET }}" \
-              -backend-config="prefix=terraform/state"
+        run: terraform init -backend-config="bucket=${{ env.STATE_BUCKET }}" -backend-config="prefix=terraform/state"
 
       # Terraform Plan
       - name: Terraform Plan-
