@@ -29,16 +29,15 @@ jobs:
         run: |
           if [[ "${GITHUB_REF}" == "refs/heads/develop" ]]; then
             echo "ENV=dev" >> $GITHUB_ENV
-            echo "PROJECT_ID=my-project-dev" >> $GITHUB_ENV
+            echo "PROJECT_ID=projets-gcp-dev" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-dev" >> $GITHUB_ENV
             echo "SECRET_NAME=GCP_SA_KEY_DEV" >> $GITHUB_ENV
           elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
-            echo "PROJECT_ID=my-project-prod" >> $GITHUB_ENV
+            echo "PROJECT_ID=projets-gcp-prod" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-prod" >> $GITHUB_ENV
             echo "SECRET_NAME=GCP_SA_KEY_PROD" >> $GITHUB_ENV
           fi
-          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa-key.json" >> $GITHUB_ENV
 
       # Créer le fichier credentials depuis le secret base64
       - name: Create GCP credentials file
