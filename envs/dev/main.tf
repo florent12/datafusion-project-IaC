@@ -17,3 +17,12 @@ module "composer_env" {
   env         = var.env
  # env_name    = "composer-${var.env}"      #
 }
+
+#Appel du module Data Fusion
+module "df_instance" {
+  source                    = "../../modules/datafusion"
+  region                    = var.region
+  env                       = var.env
+  data_fusion_instance_type = var.data_fusion_instance_type
+}
+

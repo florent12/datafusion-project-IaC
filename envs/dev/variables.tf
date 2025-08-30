@@ -19,3 +19,9 @@ variable "gcp_credentials" {
   type        = string
   sensitive   = true
 }
+
+variable "data_fusion_instance_type" {
+  description = "type de l'instance Data Fusion"
+  default = "BASIC"
+}
+
