@@ -3,11 +3,6 @@ variable "project_id" {
   type        = string
 }
 
-variable "region" {
-  description = "Région GCP"
-  type        = string
-  default     = "europe-west9"
-}
 
 variable "env" {
   description = "Nom de l'environnement (dev ou prod)"

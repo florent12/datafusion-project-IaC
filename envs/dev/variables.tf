@@ -25,3 +25,12 @@ variable "data_fusion_instance_type" {
   default = "BASIC"
 }
 
+variable "dataset_id" {
+  description = "id du dataset à créer"
+  type        = string
+}
+
+variable "table_id" {
+  description = "table à créer"
+  type = string
+}

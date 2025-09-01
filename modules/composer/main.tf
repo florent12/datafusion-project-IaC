@@ -5,7 +5,6 @@
 
 resource "google_composer_environment" "composer_env" {
   name   = "composer-${var.env}"   # exemple: composer-dev ou composer-prod
-  region = var.region
 
   config {
     #node_count = 3   # nombre de nœuds du cluster GKE sous-jacent
@@ -18,6 +17,7 @@ resource "google_composer_environment" "composer_env" {
     node_config {
       service_account = "composer-sa@${var.project_id}.iam.gserviceaccount.com"
     }
+    
 
     # config machine des workers
     workloads_config {
