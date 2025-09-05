@@ -24,6 +24,7 @@ module "df_instance" {
   #region                    = var.region
   env                       = var.env
   data_fusion_instance_type = var.data_fusion_instance_type
+  data_fusion_service_account = var.data_fusion_service_account
 }
 
 module "bigquery" {
