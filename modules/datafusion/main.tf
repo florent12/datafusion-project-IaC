@@ -1,7 +1,7 @@
 resource "google_data_fusion_instance" "df_instance" {
   name                          = "datafusion-${var.env}"
   type                          = var.data_fusion_instance_type
-  #dataproc_service_account      = data.google_app_engine_default_service_account.default.email
+  dataproc_service_account      = var.data_fusion_service_account
 
 }
 

@@ -34,3 +34,8 @@ variable "table_id" {
   description = "table à créer"
   type = string
 }
+
+variable "data_fusion_service_account" {
+  description = "compte de service lié à l'instance Data Fusion"
+  type       = string
+}
