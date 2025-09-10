@@ -31,4 +31,5 @@ module "bigquery" {
   source     = "../../modules/bigquery"
   dataset_id = var.dataset_id
   table_id   = var.table_id
+  location   = "EU"
 }
