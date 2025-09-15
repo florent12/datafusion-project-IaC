@@ -1,10 +1,13 @@
+
 name: Terraform Deploy
+
 
 on:
   push:
     branches:
       - develop
       - main
+
   workflow_dispatch:
 
 jobs:
@@ -23,7 +26,9 @@ jobs:
         with:
           terraform_version: 1.7.0
 
+
       # Déterminer l'environnement et la configuration
+
       - name: Set environment variables
         id: set-env
         run: |
@@ -32,6 +37,7 @@ jobs:
             echo "PROJECT_ID=projets-gcp-dev" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-dev" >> $GITHUB_ENV
             echo "SECRET_NAME=GCP_SA_KEY_DEV" >> $GITHUB_ENV
+
           elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
             echo "PROJECT_ID=projets-gcp-prod" >> $GITHUB_ENV
@@ -72,4 +78,25 @@ jobs:
         working-directory: envs/${{ env.ENV }}
         env:
           TF_VAR_gcp_credentials: $GOOGLE_APPLICATION_CREDENTIALS
+
+            echo "${{ secrets.GCP_SA_KEY_PROD }}" > /tmp/sa-key.json
+          fi
+
+      - name: Authenticate with gcloud
+        run: |
+          gcloud auth activate-service-account --key-file=/tmp/sa-key.json
+          gcloud config set project $PROJECT_ID
+
+      - name: Terraform Init
+        working-directory: infra/envs/${{ env.ENV }}
+        run: terraform init -backend-config="bucket=${{ env.STATE_BUCKET }}" -backend-config="prefix=terraform/state"
+
+      - name: Terraform Plan
+        working-directory: infra/envs/${{ env.ENV }}
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+        working-directory: infra/envs/${{ env.ENV }}
+
         run: terraform apply -auto-approve tfplan
