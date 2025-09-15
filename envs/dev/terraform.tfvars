@@ -1,0 +1,6 @@
+project_id = "projets-gcp-dev"
+region     = "europe-west9"
+env        = "dev"
+dataset_id = "employee"
+table_id = "emp_data"
+data_fusion_service_account = "dataproc-sa@projets-gcp-dev.iam.gserviceaccount.com"

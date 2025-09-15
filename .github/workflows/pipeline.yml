@@ -1,4 +1,6 @@
-name: "Terraform CI/CD"
+
+name: Terraform Deploy
+
 
 on:
   push:
@@ -6,22 +8,26 @@ on:
       - develop
       - main
 
+  workflow_dispatch:
+
 jobs:
   terraform:
-    name: "Terraform Deploy"
+    name: Deploy Terraform
     runs-on: ubuntu-latest
 
-    env:
-      TF_VAR_gcp_credentials: "/tmp/sa-key.json"
-
     steps:
+      # Récupération du code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Terraform
+      # Installation Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.0
+
+
+      # Déterminer l'environnement et la configuration
 
       - name: Set environment variables
         id: set-env
@@ -30,11 +36,49 @@ jobs:
             echo "ENV=dev" >> $GITHUB_ENV
             echo "PROJECT_ID=projets-gcp-dev" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-dev" >> $GITHUB_ENV
-            echo "${{ secrets.GCP_SA_KEY_DEV }}" | base64 --decode > /tmp/sa-key.json
+            echo "SECRET_NAME=GCP_SA_KEY_DEV" >> $GITHUB_ENV
+
           elif [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             echo "ENV=prod" >> $GITHUB_ENV
             echo "PROJECT_ID=projets-gcp-prod" >> $GITHUB_ENV
             echo "STATE_BUCKET=projet-tf-state-prod" >> $GITHUB_ENV
+            echo "SECRET_NAME=GCP_SA_KEY_PROD" >> $GITHUB_ENV
+          fi
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa-key.json" >> $GITHUB_ENV
+
+      # Créer le fichier credentials depuis le secret base64
+      - name: Create GCP credentials file
+        run: |
+          echo "${{ secrets[env.SECRET_NAME] }}" | base64 --decode > $GOOGLE_APPLICATION_CREDENTIALS
+          echo "Checking the credentials:"
+          head -n 3 $GOOGLE_APPLICATION_CREDENTIALS
+        shell: bash
+
+      # Authentification gcloud
+      - name: Authenticate with gcloud
+        run: |
+          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+          gcloud config set project $PROJECT_ID
+
+      # Initialisation Terraform
+      - name: Terraform Init
+        working-directory: envs/${{ env.ENV }}
+        run: terraform init -backend-config="bucket=${{ env.STATE_BUCKET }}" -backend-config="prefix=terraform/state"
+
+      # Terraform Plan
+      - name: Terraform Plan-
+        working-directory: envs/${{ env.ENV }}
+        env:
+          TF_VAR_gcp_credentials: $GOOGLE_APPLICATION_CREDENTIALS
+        run: terraform plan -out=tfplan
+
+      # Terraform Apply
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+        working-directory: envs/${{ env.ENV }}
+        env:
+          TF_VAR_gcp_credentials: $GOOGLE_APPLICATION_CREDENTIALS
+
             echo "${{ secrets.GCP_SA_KEY_PROD }}" > /tmp/sa-key.json
           fi
 
@@ -54,4 +98,5 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
         working-directory: infra/envs/${{ env.ENV }}
+
         run: terraform apply -auto-approve tfplan
