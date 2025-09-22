@@ -19,6 +19,7 @@ et le déploiement est automatisé via **GitHub Actions**.
 ## Déploiemnent depuis la machine locale: 
 - gcloud auth activate-service-account --key-file="chemin du compte de service"
 - gcloud config set project <PROJECT_ID>
+
 **Depuis envs/dev ou env/prod:**
 -terraform init
 -terraform plan      # pour voir les changements
