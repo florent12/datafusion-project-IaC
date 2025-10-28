@@ -9,3 +9,9 @@ variable "table_id" {
     type        = string
   
 }
+
+variable "location" {
+  description = "Emplacement géographique du dataset"
+  type        = string
+  default = "EU"
+}
