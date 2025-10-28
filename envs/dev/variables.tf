@@ -39,3 +39,9 @@ variable "data_fusion_service_account" {
   description = "compte de service lié à l'instance Data Fusion"
   type       = string
 }
+
+variable "location" {
+  description = "Emplacement géographique du dataset"
+  type        = string
+  default = "EU"
+}
